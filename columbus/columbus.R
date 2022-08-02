@@ -8,7 +8,6 @@ columbus_queen = read.gal(file = "columbus.gal", region.id = columbus$POLYID)
 plot(columbus)
 plot(columbus_queen, coordinates(columbus), add = TRUE)
 
-
 W = nb2listw(neighbours = columbus_queen)
 W = listw2mat(W)
 View(W)
