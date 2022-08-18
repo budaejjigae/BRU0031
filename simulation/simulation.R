@@ -45,8 +45,8 @@ hex = c("#000000", "#FFFFFF", "#FF0000", "#00FF00",
 
 
 
-hex_50 = c(rep(hex[4], 20), rep(hex[8], 5), rep(hex[4], 25))
-id_50 = c(rep("", 19), paste0("", 20:26), rep("", 24))
+hex_50 = c(rep(hex[4], 24), rep(hex[8], 1), rep(hex[4], 25))
+id_50 = c(rep("", 23), paste0("", 24:26), rep("", 24))
 
 
 
@@ -57,7 +57,7 @@ id_50 = c(rep("", 19), paste0("", 20:26), rep("", 24))
 
 rho_0 = 0.9
 
-m = 5
+m = 1
 zeros_m = numeric(m)      # 0
 eye_m = diag(m)           # 1
 beta_0 = rep(0.5, m)
@@ -99,11 +99,10 @@ function_0 = function(first, last, deviate) {
 
 }
 
-first = 21
+first = 25
 last = 25
 
-deviate = 5
-# deviate = 4.2
+deviate = 3
 # deviate = 0
 
 
@@ -293,7 +292,7 @@ D_0 = diag(m)
 
 
 I = 5000  #             iterations
-B = 500   #             burn in
+B = 1000   #            burn in
 R = I - B #             retained draws
 t = 1     #             thinning
 MCMC = matrix(0, I, m + 2)
@@ -461,7 +460,7 @@ PCA_R = PCA$rotation         # rotation matrix
 
 
 PCA_3D = scatterplot3d(x = PCA_R[, 1], y = PCA_R[, 2], z = PCA_R[, 3],        #  visual 03
-                       xlab = "PC1 (.76)", ylab = "PC2 (.13)", zlab = "PC3 (.06)",
+                       xlab = "PC1 (.66)", ylab = "PC2 (.34)", zlab = "PC3 (.00)",
                        color = hex_50, pch = 19, type = "h")
 PCA_2D = PCA_3D$xyz.convert(PCA_R[,1], PCA_R[,2], PCA_R[,3])
 text(PCA_2D$x, PCA_2D$y,
