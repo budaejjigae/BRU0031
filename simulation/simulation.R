@@ -1,5 +1,5 @@
 #                                             CL
-#                                             29/05/22
+#                                             24/08/22
 
 
 #                                             Packages
@@ -28,10 +28,10 @@ library(scatterplot3d)
 #                                             Replicas
 
 
-# set.seed(743435)
+set.seed(743435)
 # set.seed(29486173)
 
-set.seed(80357)
+# set.seed(80357)
 # set.seed(80433)
 
 
@@ -46,7 +46,7 @@ hex = c("#000000", "#FFFFFF", "#FF0000", "#00FF00",
 
 
 hex_50 = c(rep(hex[4], 24), rep(hex[8], 1), rep(hex[4], 25))
-id_50 = c(rep("", 23), paste0("", 24:26), rep("", 24))
+id_50 = c(rep("", 19), paste0("", 20:30), rep("", 20))
 
 
 
@@ -55,7 +55,7 @@ id_50 = c(rep("", 23), paste0("", 24:26), rep("", 24))
 
 
 
-rho_0 = 0.5
+rho_0 = 0.9
 
 m = 1
 zeros_m = numeric(m)      # 0
@@ -81,16 +81,27 @@ A_0 = eye_n - rho_0 * W
 y_0 = solve(A_0) %*% X %*% beta_0 + solve(A_0) %*% e_0
 
 
+#                                             Standardise
+
+y_bar = mean(y_0)
+s2 = var(y_0)
+
+for (i in 1:n) {
+  
+  y_0[i] = (y_0[i] - y_bar) / sqrt(s2)
+  
+}
+
 
 #                                             Outliers
 
 
-function_0 = function(first, last, deviate) {
+function_0 = function(index, deviate) {
 
 
   # additive outliers
 
-  y_0[seq(first, last)] = y_0[seq(first, last)] + deviate * sqrt(sigma2_0)
+  y_0[index] = y_0[index] + deviate * sqrt(s2)
 
   output = y_0
 
@@ -99,18 +110,11 @@ function_0 = function(first, last, deviate) {
 
 }
 
-first = 25
-last = 25
-
-# deviate = 0
-deviate = 1
-# deviate = 2
-# deviate = 3
 
 
 
-y = function_0(first, last, deviate)    #   influential observations will distort parameter estimates
-plot(y, ylim = c(-5, 5))
+y = function_0(25, 1)    #   influential observations will distort parameter estimates
+plot(y)
 
 y_df = as.data.frame(y)
 ggplot(y_df, aes(1:50, V1)) +           #   visual 01
@@ -294,8 +298,8 @@ D_0 = diag(m)
 
 
 
-I = 5000^2  #             iterations
-B = 1000^2   #            burn in
+I = 5000  #             iterations
+B = 1000   #            burn in
 R = I - B #             retained draws
 t = 1     #             thinning
 MCMC = matrix(0, I, m + 2)
@@ -347,131 +351,132 @@ ggmcmc(MCMC_GG)          #     visual 02
 
 
 
-# #                                             Case Influence Analysis
-# 
-# 
-# D = diag(n - 1)
-# 
-# s = numeric(n)
-# 
-# 
-# 
-# 
-# function_10 = function(k) {
-# 
-#   # deletion matrix
-# 
-# 
-#   D = as.data.frame(D)
-# 
-#   output = mutate(D, 0, .before = k)
-# 
-#   output = as.matrix(output)
-# 
-#   return(output)
-# 
-# 
-# }
-# 
-# 
-# 
-# function_11 = function(k) {
-# 
-#   # selection vector
-# 
-#   s[k] = 1
-#   output = s
-# 
-#   return(output)
-# 
-# }
-# 
-# 
-# 
-# 
-# function_14 = function(rho, beta, sigma2, k) {
-# 
-#   # perturbed loglikelihood
-# 
-# 
-#   D_k = function_10(k)
-#   s_k = function_11(k)
-# 
-#   A_k = diag(n - 1) - rho^2 * D_k %*% W %*% s_k %*% t(s_k) %*% W %*% t(D_k)
-#   A_k = A_k - rho * D_k %*% W %*% t(D_k)
-#   V_k = sigma2 * rho^2 * D_k %*% W %*% s_k %*% t(s_k) %*% s_k %*% t(s_k) %*% t(W) %*% t(D_k)
-#   V_k = V_k + sigma2 * D_k %*% t(D_k)
-# 
-#   y_k = D_k %*% y
-#   X_k = rho * D_k %*% W %*% s_k %*% t(s_k) %*% X + D_k %*% X
-#   e_k = A_k %*% y_k - X_k %*% beta
-# 
-# 
-#   output = dmvnorm(t(e_k), numeric(n - 1), V_k, log = TRUE)  # mvtnorm::dmvnorm vectors in rows
-#   output = output + log(det(A_k))
-# 
-# 
-# 
-#   return(output)
-# 
-# }
-# 
-# 
-# function_15 = function(rho, beta, sigma2, k) {
-# 
-#   # unnormalised weight
-# 
-#   output = function_14(rho, beta, sigma2, k)
-#   output = output - function_03(rho, beta, sigma2)
-# 
-# 
-#   return(output)
-# 
-# 
-# }
-# 
-# 
-# W_IS = matrix(0, R, n)
-# 
-# 
-# for (k in 1:n) {
-# 
-# 
-# 
-#   for (r in 1:R) {
-# 
-# 
-# 
-#     weight = function_15(MCMC[r, 1], MCMC[r, 2:(m + 1)], MCMC[r, m + 2], k)
-#     W_IS[r, k] = weight
-# 
-# 
-#   }
-# 
-# 
-# }
-# 
-# C_IS = cov(W_IS)
-# 
-# 
-# #                                             Static Eigen Analysis
-# 
-# 
-# 
-# PCA = prcomp(C_IS)
-# PCA_R = PCA$rotation         # rotation matrix
-# 
-# 
-# PCA_3D = scatterplot3d(x = PCA_R[, 1], y = PCA_R[, 2], z = PCA_R[, 3],        #  visual 03
-#                        xlab = "PC1 (.66)", ylab = "PC2 (.34)", zlab = "PC3 (.00)",
-#                        color = hex_50, pch = 19, type = "h")
-# PCA_2D = PCA_3D$xyz.convert(PCA_R[,1], PCA_R[,2], PCA_R[,3])
-# text(PCA_2D$x, PCA_2D$y,
-#      labels = id_50, pos = 3)
-# 
-# 
-# 
-# #                                             Interactive Eigen Analysis
+#                                             Case Influence Analysis
+
+
+D = diag(n - 1)
+
+s = numeric(n)
+
+
+
+
+function_10 = function(k) {
+
+  # deletion matrix
+
+
+  D = as.data.frame(D)
+
+  output = mutate(D, 0, .before = k)
+
+  output = as.matrix(output)
+
+  return(output)
+
+
+}
+
+
+
+function_11 = function(k) {
+
+  # selection vector
+
+  s[k] = 1
+  output = s
+
+  return(output)
+
+}
+
+
+
+
+function_14 = function(rho, beta, sigma2, k) {
+
+  # perturbed loglikelihood
+
+
+  D_k = function_10(k)
+  s_k = function_11(k)
+
+  A_k = diag(n - 1) - rho^2 * D_k %*% W %*% s_k %*% t(s_k) %*% W %*% t(D_k)
+  A_k = A_k - rho * D_k %*% W %*% t(D_k)
+  V_k = sigma2 * rho^2 * D_k %*% W %*% s_k %*% t(s_k) %*% s_k %*% t(s_k) %*% t(W) %*% t(D_k)
+  V_k = V_k + sigma2 * D_k %*% t(D_k)
+
+  y_k = D_k %*% y
+  X_k = rho * D_k %*% W %*% s_k %*% t(s_k) %*% X + D_k %*% X
+  e_k = A_k %*% y_k - X_k %*% beta
+
+
+  output = dmvnorm(t(e_k), numeric(n - 1), V_k, log = TRUE)  # mvtnorm::dmvnorm vectors in rows
+  output = output + log(det(A_k))
+
+
+
+  return(output)
+
+}
+
+
+function_15 = function(rho, beta, sigma2, k) {
+
+  # unnormalised weight
+
+  output = function_14(rho, beta, sigma2, k)
+  output = output - function_03(rho, beta, sigma2)
+
+
+  return(output)
+
+
+}
+
+
+W_IS = matrix(0, R, n)
+
+
+for (k in 1:n) {
+
+
+
+  for (r in 1:R) {
+
+
+
+    weight = function_15(MCMC[r, 1], MCMC[r, 2:(m + 1)], MCMC[r, m + 2], k)
+    W_IS[r, k] = weight
+
+
+  }
+
+
+}
+
+C_IS = cov(W_IS)
+
+
+#                                             Static Eigen Analysis
+
+
+
+PCA = prcomp(C_IS)
+PCA_R = PCA$rotation         # rotation matrix
+
+
+PCA_3D = scatterplot3d(x = PCA_R[, 1], y = PCA_R[, 2], z = PCA_R[, 3],        #  visual 03
+                       xlab = "PC1 (.9944)", ylab = "PC2 (.0055)", zlab = "PC3 (.0001)",
+                       color = hex_50, pch = 19, type = "h")
+PCA_2D = PCA_3D$xyz.convert(PCA_R[,1], PCA_R[,2], PCA_R[,3])
+text(PCA_2D$x, PCA_2D$y,
+     labels = id_50, pos = 3)
+
+
+
+#                                             Interactive Eigen Analysis
+
 
 
 
