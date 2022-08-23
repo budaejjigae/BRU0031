@@ -30,11 +30,11 @@ function_01 <- function(n) {
   
 }
 
-function_02 <- function(data, first, last, deviate) {
+function_02 <- function(data, index, deviate) {
   
   y <- data
   
-  y[first:last] <- y[first:last] + deviate
+  y[index] <- y[index] + deviate
   
   return(y)
   
@@ -70,7 +70,7 @@ box()
 p <- 1
 X <- mvtnorm::rmvnorm(n = n, mean = rep(0, p), sigma = diag(p))
 
-rho_0 <- 0.5
+rho_0 <- 0.9
 A_0 <- spatialreg::invIrW(x = W, rho = rho_0)
 
 sigma2_0 <- 0.5
@@ -85,7 +85,6 @@ plot(y_0, lag(W.listw, y_0),
 lines(lowess(y_0, lag(W.listw, y_0)),
       lty = 2, lwd = 2)
 
-y <- function_02(y_0, 25, 25, 3 * sqrt(sigma2_0))
 
 
 
