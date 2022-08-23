@@ -2,6 +2,7 @@ library(sna)
 library(RColorBrewer)
 library(mvtnorm)
 library(spatialreg)
+library(spdep)
 
 
 
@@ -13,19 +14,19 @@ set.seed(743435)
 
 function_01 <- function(n) {
   
-  C <- matrix(0, n, n)
+  B <- matrix(0, n, n)
   
-  C[1, 2] <- 1
-  C[n, n-1] <- 1
+  B[1, 2] <- 1
+  B[n, n-1] <- 1
   
   for (i in 2:(n-1)) {
     
-    C[i, i-1] <- 1
-    C[i, i+1] <- 1
+    B[i, i-1] <- 1
+    B[i, i+1] <- 1
     
   }
   
-  return(C)
+  return(B)
   
 }
 
@@ -55,8 +56,16 @@ function_02 <- function(data, first, last, deviate) {
 
 
 n <- 50
-C <- function_01(n)
-W <- sna::make.stochastic(dat = C, mode = "row")
+B <- function_01(n)
+W <- sna::make.stochastic(dat = B, mode = "row")
+
+image(1:n, 1:n, t(W[, n:1]),
+      breaks = c(0, 0.25, 0.75, 1),
+      col = RColorBrewer::brewer.pal(3, "Purples"),
+      main = "Spatial weights representation for y_0",
+      axes = FALSE,
+      xlab = "", ylab = "")
+box()
 
 p <- 1
 X <- mvtnorm::rmvnorm(n = n, mean = rep(0, p), sigma = diag(p))
@@ -70,19 +79,15 @@ e_0 <- rnorm(n, 0, sqrt(sigma2_0))
 beta_0 <- rep(0.5, p)
 y_0 <- A_0 %*% X %*% beta_0 + A_0 %*% e_0
 
+W.listw <- spdep::mat2listw(x = W)
+plot(y_0, lag(W.listw, y_0),
+     xlab = "y_0", ylab = "W * y_0")
+lines(lowess(y_0, lag(W.listw, y_0)),
+      lty = 2, lwd = 2)
+
 y <- function_02(y_0, 25, 25, 3 * sqrt(sigma2_0))
 
 
-
-
-
-image(1:n, 1:n, t(W[, n:1]),
-      breaks = c(0, 0.25, 0.75, 1),
-      col = RColorBrewer::brewer.pal(3, "Purples"),
-      main = "Spatial weights representation for y",
-      axes = FALSE,
-      xlab = "", ylab = "")
-box()
 
 
 
