@@ -73,7 +73,7 @@ eye_n = diag(n)           # 1
 
 C = Diag(rep(1, n - 1), 1) + Diag(rep(1, n - 1), -1)
 C[24, 26] = 1      #   asymmetry
-C[26, 24] = 1      #   symmetry
+C[26, 24] = 1
 W = C / rowSums(C)      #      right stochastic spatial weight matrix
 
 X = rmvnorm(n, zeros_m, eye_m)    #  matrix normal design matrix
