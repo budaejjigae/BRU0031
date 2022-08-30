@@ -55,7 +55,7 @@ id_50 = c(rep("", 19), paste0("", 20:30), rep("", 20))
 
 
 
-rho_0 = -0.9
+rho_0 = 0.5
 
 m = 1
 zeros_m = numeric(m)      # 0
@@ -72,6 +72,8 @@ zeros_n = numeric(n)      # 0
 eye_n = diag(n)           # 1
 
 C = Diag(rep(1, n - 1), 1) + Diag(rep(1, n - 1), -1)
+C[24, 26] = 1      #   asymmetry
+C[26, 24] = 1      #   symmetry
 W = C / rowSums(C)      #      right stochastic spatial weight matrix
 
 X = rmvnorm(n, zeros_m, eye_m)    #  matrix normal design matrix
@@ -467,7 +469,7 @@ PCA_R = PCA$rotation         # rotation matrix
 
 
 PCA_3D = scatterplot3d(x = PCA_R[, 1], y = PCA_R[, 2], z = PCA_R[, 3],        #  visual 03
-                       xlab = "PC1 (.8573)", ylab = "PC2 (.1274)", zlab = "PC3 (.0145)",
+                       xlab = "PC1 (.8033)", ylab = "PC2 (.1906)", zlab = "PC3 (.0001)",
                        color = hex_50, pch = 19, type = "h")
 PCA_2D = PCA_3D$xyz.convert(PCA_R[,1], PCA_R[,2], PCA_R[,3])
 text(PCA_2D$x, PCA_2D$y,
