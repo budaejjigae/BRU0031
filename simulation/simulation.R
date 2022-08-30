@@ -55,7 +55,7 @@ id_50 = c(rep("", 19), paste0("", 20:30), rep("", 20))
 
 
 
-rho_0 = 0.9
+rho_0 = -0.9
 
 m = 1
 zeros_m = numeric(m)      # 0
@@ -467,7 +467,7 @@ PCA_R = PCA$rotation         # rotation matrix
 
 
 PCA_3D = scatterplot3d(x = PCA_R[, 1], y = PCA_R[, 2], z = PCA_R[, 3],        #  visual 03
-                       xlab = "PC1 (.9944)", ylab = "PC2 (.0055)", zlab = "PC3 (.0001)",
+                       xlab = "PC1 (.8573)", ylab = "PC2 (.1274)", zlab = "PC3 (.0145)",
                        color = hex_50, pch = 19, type = "h")
 PCA_2D = PCA_3D$xyz.convert(PCA_R[,1], PCA_R[,2], PCA_R[,3])
 text(PCA_2D$x, PCA_2D$y,
