@@ -17,6 +17,8 @@ function_01 <- function(n) {
   B <- matrix(0, n, n)
   
   B[1, 2] <- 1
+  # B[1, n] <- 1
+  # B[n, 1] <- 1
   B[n, n-1] <- 1
   
   for (i in 2:(n-1)) {
@@ -57,13 +59,11 @@ function_02 <- function(data, index, deviate) {
 
 n <- 50
 B <- function_01(n)
-B[24, 26] = 1
-B[26, 24] = 1
 W <- sna::make.stochastic(dat = B, mode = "row")
 
 image(1:n, 1:n, t(W[, n:1]),
-      breaks = c(0, 0.1, 0.4, 0.6, 1),
-      col = RColorBrewer::brewer.pal(4, "Purples"),
+      breaks = c(0, 0.25, 0.75, 1),
+      col = RColorBrewer::brewer.pal(3, "Purples"),
       main = "Spatial weights representation for y_0",
       axes = FALSE,
       xlab = "", ylab = "")
@@ -72,7 +72,7 @@ box()
 p <- 1
 X <- mvtnorm::rmvnorm(n = n, mean = rep(0, p), sigma = diag(p))
 
-rho_0 <- -0.1
+rho_0 <- 0.5
 A_0 <- spatialreg::invIrW(x = W, rho = rho_0)
 
 sigma2_0 <- 0.5
