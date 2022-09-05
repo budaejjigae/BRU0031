@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.6.2)  4 SEP 2022 23:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.6.2)  5 SEP 2022 17:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -176,7 +176,7 @@ r-birth_52211883534_o.png  used on input line 31.
 {/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./20220
 90124bd9f962f9b894dc131a333eaa4c91c31ab71499b40f9d8f48ff56abcf96458/nasas-webb-
 reveals-cosmic-cliffs-glittering-landscape-of-star-birth_52211883534_o.png>]
-[2] [3] (./draft.bbl) [4] (./draft.aux) ) 
+[2] (./draft.bbl [3]) [4] (./draft.aux) ) 
 Here is how much of TeX's memory you used:
  2145 strings out of 480608
  29662 string characters out of 5903631
@@ -201,7 +201,7 @@ sfonts/cm/cmr9.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmsy10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmsy7.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmti10.pfb>
-Output written on draft.pdf (4 pages, 5509118 bytes).
+Output written on draft.pdf (4 pages, 5507821 bytes).
 PDF statistics:
  78 PDF objects out of 1000 (max. 8388607)
  55 compressed objects within 1 object stream

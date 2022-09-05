@@ -48,6 +48,7 @@ Figure \ref{f1} $\ldots$
 \begin{align}
 	\hat{\mathbf{u}} & =\frac{\mathbf{u}}{\left|\mathbf{u}\right|}
 \end{align}
+
 \begin{align}
 	\textrm{proj}_{\hat{\mathbf{u}}}\mathbf{x} & =c\hat{\mathbf{u}}
 \end{align}
@@ -55,6 +56,7 @@ Figure \ref{f1} $\ldots$
 \begin{align}
 	c & =\left\langle \hat{\mathbf{u}},\mathbf{x}\right\rangle 
 \end{align}
+
 \begin{align}
 	\textrm{proj}_{\hat{\mathbf{u}}}\mathbf{x} & =\left\langle \hat{\mathbf{u}},\mathbf{x}\right\rangle \hat{\mathbf{u}}
 \end{align}
@@ -105,8 +107,6 @@ Figure \ref{f1} $\ldots$
 
 \subsection{Decomposition}
 
-\subsubsection{Eigen}
-
 \begin{align}
 	\mathbf{A}\mathbf{v}_{1} & =\lambda_{1}\mathbf{v}_{1}\\
 	\mathbf{A}\mathbf{v}_{2} & =\lambda_{2}\mathbf{v}_{2}
@@ -129,7 +129,9 @@ Figure \ref{f1} $\ldots$
 	\mathbf{A} & =\mathbf{V}\mathbf{\Lambda}\mathbf{V}^{-1}
 \end{align}
 
-\subsubsection{Singular}
+\section{Latent semantic analysis}
+
+\subsection{Decomposition}
 
 \begin{align}
 	\mathbf{B} & =\sigma_{1}\mathbf{u}_{1}\mathbf{v}_{1}^{T}+\sigma_{2}\mathbf{u}_{2}\mathbf{v}_{2}^{T}
@@ -153,18 +155,6 @@ Figure \ref{f1} $\ldots$
 \begin{align}
 	\mathbf{B}\mathbf{V} & =\mathbf{U}\mathbf{\Sigma}
 \end{align}
-
-\subsubsection{Eigen versus singular}
-
-\begin{align}
-	\mathbf{B}^{T}\mathbf{B} & =\mathbf{V}\left(\mathbf{\Sigma}^{T}\mathbf{\Sigma}\right)\mathbf{V}^{T}
-\end{align}
-
-\begin{align}
-	\mathbf{B}\mathbf{B}^{T} & =\mathbf{U}\left(\mathbf{\Sigma}\mathbf{\Sigma}^{T}\right)\mathbf{U}^{T}
-\end{align}
-
-\subsection{}
 
 \bibliography{draft}
 \bibliographystyle{agsm}
