@@ -8,7 +8,7 @@ set.seed(743435)
 
 
 
-bimat.f <- function(n) {
+binmat.f <- function(n) {
   
   B <- matrix(0, n, n)
   
@@ -17,8 +17,8 @@ bimat.f <- function(n) {
   
   for (i in 2:(n-1)) {
     
-    B[i, i-1] <- 1
     B[i, i+1] <- 1
+    B[i, i-1] <- 1
     
   }
   
@@ -36,28 +36,6 @@ rmvnorm.f <- function(n, mu, Sigma) {
   X <- data.frame(X)
   
   return(X)
-  
-}
-
-delmat.f <- function(k) {
-  
-  D <- diag(n-1)
-  
-  D <- as.data.frame(D)
-  D <- mutate(D, 0, .before = k)
-  D <- as.matrix(D)
-  
-  return(D)
-  
-}
-
-selvec.f <- function(k) {
-  
-  s <- numeric(n)
-  
-  s[k] <- 1
-  
-  return(s)
   
 }
 
@@ -80,6 +58,12 @@ dmvnorm.f <- function(x, mu, Sigma, log = TRUE) {
   return(f)
   
 }
+
+# invIrW.f <- function() {
+#   
+#   
+#   
+# }
 
 mu.f <- function(beta, sigma2, rho, omit = TRUE) {
   
@@ -136,18 +120,36 @@ Sigma.f <- function(beta, sigma2, rho, omit = TRUE) {
   
 }
 
-# invIrW.f <- function() {
-#   
-#   
-#   
-# }
+delmat.f <- function(k) {
+  
+  D <- diag(n-1)
+  
+  D <- as.data.frame(D)
+  D <- mutate(D, 0, .before = k)
+  D <- as.matrix(D)
+  
+  return(D)
+  
+}
+
+selvec.f <- function(k) {
+  
+  s <- numeric(n)
+  
+  s[k] <- 1
+  
+  return(s)
+  
+}
+
+
 
 
 
 
 
 n <- 50
-B <- bimat.f(n = n)
+B <- binmat.f(n = n)
 W <- make.stochastic(dat = B, mode = "row")
 
 x0 <- rep(1, n)
@@ -165,7 +167,7 @@ mu <- mu.f(beta = beta, sigma2 = sigma2, rho = rho, omit = FALSE)
 Sigma <- Sigma.f(beta = beta, sigma2 = sigma2, rho = rho, omit = FALSE)
 
 y <- t(rmvnorm.f(n = 1, mu = mu, Sigma = Sigma))
-y[25] <- y[25] + 2 * sqrt(45)
+y[28] <- y[28] + 5 * sqrt(45)
 
 
 
@@ -229,4 +231,4 @@ summary(PCA)
 screeplot(PCA, main = "Scree plot", type = "line")
 abline(1, 0, lty = 2)
 
-biplot(PCA, cex=c(0.01, 1))
+biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (.99)", ylab = "PC2 (.01)")
