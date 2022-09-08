@@ -150,6 +150,14 @@ selvec.f <- function(k) {
 
 n <- 50
 B <- binmat.f(n = n)
+# B[27, 1:25] <- 1
+# B[27, 29:n] <- 1
+# B[29, 1:27] <- 1
+# B[29, 31:n] <- 1
+B[1:25, 27] <- 1
+B[29:n, 27] <- 1
+B[1:27, 29] <- 1
+B[31:n, 29] <- 1
 W <- make.stochastic(dat = B, mode = "row")
 
 x0 <- rep(1, n)
@@ -159,7 +167,7 @@ X <- cbind(x0, x1, x2)
 
 beta <- c(18, 0.478, -1.3)
 sigma2 <- rep(45, n)
-rho <- 0.5
+rho <- 0.7
 
 # A <- diag(n) - rho * W
 
@@ -231,4 +239,4 @@ summary(PCA)
 screeplot(PCA, main = "Scree plot", type = "line")
 abline(1, 0, lty = 2)
 
-biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (.99)", ylab = "PC2 (.01)")
+biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (52%)", ylab = "PC2 (21%)")
