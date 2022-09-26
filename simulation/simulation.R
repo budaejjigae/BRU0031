@@ -1,10 +1,10 @@
 library(sna)
 library(BSPADATA)
 library(dplyr)
+library(ggmcmc)
 
 
-
-set.seed(743435)
+set.seed(29486173)
 
 
 
@@ -61,8 +61,8 @@ dmvnorm.f <- function(x, mu, Sigma, log = TRUE) {
 
 # invIrW.f <- function() {
 #   
-#   
-#   
+#   function for computing simultaneous autoregressive generating operators (A & A_k)
+# 
 # }
 
 mu.f <- function(beta, sigma2, rho, omit = TRUE) {
@@ -150,14 +150,12 @@ selvec.f <- function(k) {
 
 n <- 50
 B <- binmat.f(n = n)
-# B[27, 1:25] <- 1
-# B[27, 29:n] <- 1
-# B[29, 1:27] <- 1
-# B[29, 31:n] <- 1
-B[1:25, 27] <- 1
-B[29:n, 27] <- 1
-B[1:27, 29] <- 1
-B[31:n, 29] <- 1
+
+out <- 23
+# B[(out-3):(out-2), out] <- 1
+# B[(out+2):(out+3), out] <- 1
+# B[out, (out+2):(out+3)] <- 1
+# B[out, (out-3):(out-2)] <- 1
 W <- make.stochastic(dat = B, mode = "row")
 
 x0 <- rep(1, n)
@@ -167,17 +165,15 @@ X <- cbind(x0, x1, x2)
 
 beta <- c(18, 0.478, -1.3)
 sigma2 <- rep(45, n)
-rho <- 0.7
+rho <- 0
 
-# A <- diag(n) - rho * W
-
+# A <- invIrW.f()
 mu <- mu.f(beta = beta, sigma2 = sigma2, rho = rho, omit = FALSE)
 Sigma <- Sigma.f(beta = beta, sigma2 = sigma2, rho = rho, omit = FALSE)
-
 y <- t(rmvnorm.f(n = 1, mu = mu, Sigma = Sigma))
-y[28] <- y[28] + 5 * sqrt(45)
 
-
+size <- 0
+y[out] <- y[out] + size * sqrt(45)
 
 
 
@@ -186,8 +182,8 @@ y[28] <- y[28] + 5 * sqrt(45)
 formula <- y ~ x0 + x1 + x2
 data <- data.frame(y = y, x0 = x0, x1 = x1, x2 = x2)
 
-nsim <- 500
-burn <- 100
+nsim <- 10000
+burn <- 2000
 step <- 5
 
 prior <- list(b_pri = rep(0, 3), B_pri = diag(1000, 3), r_pri = 0.001, lambda_pri = 0.001)
@@ -198,6 +194,8 @@ MCMC <- hom_sar(formula = formula, data = data, W = W,
                  prior = prior, initial = initial, kernel = "normal")
 
 mcmc <- MCMC$chains
+mcmc.df <- ggs(mcmc)
+ggmcmc(mcmc.df)
 
 
 
@@ -234,9 +232,9 @@ for (k in 1:n) {
 
 
 PCA <- prcomp(W_IS, center = TRUE)
-
 summary(PCA)
+
 screeplot(PCA, main = "Scree plot", type = "line")
 abline(1, 0, lty = 2)
 
-biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (52%)", ylab = "PC2 (21%)")
+biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (30%)", ylab = "PC2 (26%)")
