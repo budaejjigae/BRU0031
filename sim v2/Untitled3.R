@@ -152,10 +152,10 @@ n <- 50
 B <- binmat.f(n = n)
 
 out <- 23
-# B[(out-3):(out-2), out] <- 1
-# B[(out+2):(out+3), out] <- 1
-# B[out, (out+2):(out+3)] <- 1
-# B[out, (out-3):(out-2)] <- 1
+B[(out-3):(out-2), out] <- 1
+B[(out+2):(out+3), out] <- 1
+B[out, (out+2):(out+3)] <- 1
+B[out, (out-3):(out-2)] <- 1
 W <- make.stochastic(dat = B, mode = "row")
 
 x0 <- rep(1, n)
@@ -237,4 +237,4 @@ summary(PCA)
 screeplot(PCA, main = "Scree plot", type = "line")
 abline(1, 0, lty = 2)
 
-biplot(PCA, cex=c(0.01, 0.8), xlab = "PC1 (79%)", ylab = "PC2 (16%)")
+biplot(PCA, cex=c(0.01, 0.8), xlab = "PC1 (73%)", ylab = "PC2 (21%)")
