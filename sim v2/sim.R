@@ -1,10 +1,10 @@
 library(sna)
 library(BSPADATA)
 library(dplyr)
+library(ggmcmc)
 
 
-
-set.seed(743435)
+set.seed(29486173)
 
 
 
@@ -26,13 +26,13 @@ binmat.f <- function(n) {
   
 }
 
-rmvnorm.f <- function(n, mu, Sigma) {
+rmvnorm.f <- function(row, mu, Sigma) {
   
   p <- length(mu)
   Q <- chol(Sigma)
   
-  Z <- matrix(rnorm(n * p), n, p)
-  X <- Z %*% Q + rep(1, n) %*% t(mu)
+  Z <- matrix(rnorm(row * p), row, p)
+  X <- Z %*% Q + rep(1, row) %*% t(mu)
   X <- data.frame(X)
   
   return(X)
@@ -61,8 +61,8 @@ dmvnorm.f <- function(x, mu, Sigma, log = TRUE) {
 
 # invIrW.f <- function() {
 #   
-#   
-#   
+#   Function for computing simultaneous autoregressive generating operators (A & A_k)
+# 
 # }
 
 mu.f <- function(beta, sigma2, rho, omit = TRUE) {
@@ -150,6 +150,12 @@ selvec.f <- function(k) {
 
 n <- 50
 B <- binmat.f(n = n)
+
+otlr <- 23
+# B[(otlr-3):(otlr-2), otlr] <- 1
+# B[(otlr+2):(otlr+3), otlr] <- 1
+# B[otlr, (otlr+2):(otlr+3)] <- 1
+# B[otlr, (otlr-3):(otlr-2)] <- 1
 W <- make.stochastic(dat = B, mode = "row")
 
 x0 <- rep(1, n)
@@ -157,19 +163,18 @@ x1 <- runif(n, 0, 400)
 x2 <- runif(n, 10, 23)
 X <- cbind(x0, x1, x2)
 
+rho <- 0.8
 beta <- c(18, 0.478, -1.3)
-sigma2 <- rep(45, n)
-rho <- 0.7
+sigma2 <- 45
 
-# A <- diag(n) - rho * W
-
+# A <- invIrW.f()
 mu <- mu.f(beta = beta, sigma2 = sigma2, rho = rho, omit = FALSE)
 Sigma <- Sigma.f(beta = beta, sigma2 = sigma2, rho = rho, omit = FALSE)
+y <- t(rmvnorm.f(row = 1, mu = mu, Sigma = Sigma))
 
-y <- t(rmvnorm.f(n = 1, mu = mu, Sigma = Sigma))
-y[28] <- y[28] + 5 * sqrt(45)
-
-
+# Type 1 contamination
+ctmn <- 5 * sqrt(Sigma[otlr, otlr]) * selvec.f(otlr)
+y <- y + ctmn
 
 
 
@@ -178,8 +183,8 @@ y[28] <- y[28] + 5 * sqrt(45)
 formula <- y ~ x0 + x1 + x2
 data <- data.frame(y = y, x0 = x0, x1 = x1, x2 = x2)
 
-nsim <- 500
-burn <- 100
+nsim <- 10000
+burn <- 2000
 step <- 5
 
 prior <- list(b_pri = rep(0, 3), B_pri = diag(1000, 3), r_pri = 0.001, lambda_pri = 0.001)
@@ -190,6 +195,8 @@ MCMC <- hom_sar(formula = formula, data = data, W = W,
                  prior = prior, initial = initial, kernel = "normal")
 
 mcmc <- MCMC$chains
+mcmc.df <- ggs(mcmc)
+ggmcmc(mcmc.df)
 
 
 
@@ -226,9 +233,9 @@ for (k in 1:n) {
 
 
 PCA <- prcomp(W_IS, center = TRUE)
-
 summary(PCA)
+
 screeplot(PCA, main = "Scree plot", type = "line")
 abline(1, 0, lty = 2)
 
-biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (65%)", ylab = "PC2 (21%)")
+biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (.9363)", ylab = "PC2 (.03454)")
