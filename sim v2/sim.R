@@ -1,6 +1,6 @@
+library(dplyr)
 library(sna)
 library(BSPADATA)
-library(dplyr)
 library(ggmcmc)
 
 
@@ -149,21 +149,33 @@ selvec.f <- function(k) {
 
 
 n <- 50
+# B_1
 B <- binmat.f(n = n)
 
 otlr <- 23
-# B[(otlr-3):(otlr-2), otlr] <- 1
-# B[(otlr+2):(otlr+3), otlr] <- 1
+# B_2
+# B[otlr, (otlr+2)] <- 1
+# B[otlr, (otlr-2)] <- 1
+# B[(otlr+2), otlr] <- 1
+# B[(otlr-2), otlr] <- 1
+# B_3
 # B[otlr, (otlr+2):(otlr+3)] <- 1
 # B[otlr, (otlr-3):(otlr-2)] <- 1
+# B[(otlr+2):(otlr+3), otlr] <- 1
+# B[(otlr-3):(otlr-2), otlr] <- 1
+# B_4
+B[otlr, (otlr+2):(otlr+4)] <- 1
+B[otlr, (otlr-4):(otlr-2)] <- 1
+B[(otlr+2):(otlr+4), otlr] <- 1
+B[(otlr-4):(otlr-2), otlr] <- 1
 W <- make.stochastic(dat = B, mode = "row")
 
-x0 <- rep(1, n)
-x1 <- runif(n, 0, 400)
-x2 <- runif(n, 10, 23)
-X <- cbind(x0, x1, x2)
+x1 <- rep(1, n)
+x2 <- runif(n, 0, 400)
+x3 <- runif(n, 10, 23)
+X <- cbind(x1, x2, x3)
 
-rho <- 0.8
+rho <- 0.9
 beta <- c(18, 0.478, -1.3)
 sigma2 <- 45
 
@@ -173,15 +185,15 @@ Sigma <- Sigma.f(beta = beta, sigma2 = sigma2, rho = rho, omit = FALSE)
 y <- t(rmvnorm.f(row = 1, mu = mu, Sigma = Sigma))
 
 # Type 1 contamination
-ctmn <- 5 * sqrt(Sigma[otlr, otlr]) * selvec.f(otlr)
+ctmn <- 8 * sqrt(Sigma[otlr, otlr]) * selvec.f(otlr)
 y <- y + ctmn
 
 
 
 
 
-formula <- y ~ x0 + x1 + x2
-data <- data.frame(y = y, x0 = x0, x1 = x1, x2 = x2)
+formula <- y ~ x1 + x2 + x3
+data <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
 
 nsim <- 10000
 burn <- 2000
@@ -238,4 +250,4 @@ summary(PCA)
 screeplot(PCA, main = "Scree plot", type = "line")
 abline(1, 0, lty = 2)
 
-biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (.9363)", ylab = "PC2 (.03454)")
+biplot(PCA, cex=c(0.01, 1), xlab = "PC1 (0.953)", ylab = "PC2 (0.0314)")
