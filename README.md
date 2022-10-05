@@ -2,4 +2,4 @@
 
 *Latest*
 
-Simulation study [draft](lyx.pdf) and [code](BRU0031/sim_v2)
+Simulation study [draft](lyx.pdf) and [code](sim_v2/sim.R)
