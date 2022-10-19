@@ -2,4 +2,6 @@
 
 *Latest*
 
-Simulation study [draft](lyx.pdf) and [code](sim_v2/sim.R)
+*Past*
+
+Simulation study draft and code
